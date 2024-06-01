@@ -1,0 +1,285 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    background-color: #f1f2f6;
+}
+
+.card {
+    max-width: 800px;
+    margin: 0 auto; /* Centers the form horizontally */
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #eaebf0;
+}
+
+/* Center align the title and form elements */
+h2.text-center,
+form .text-center {
+    text-align: center;
+}
+
+/* Adjust height of card body to match height of textarea */
+.card-body {
+    min-height: 100px; /* Adjust as needed */
+}
+
+/* Additional padding and margin adjustments */
+.container {
+    padding-top: 20px;
+}
+
+textarea.form-control {
+    resize: none;
+}
+
+/* Pagination styling */
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.navcent {
+    max-width: 800px;
+    margin: 0 auto; /* Centers the form control horizontally */
+    display: block; /* Ensures it doesn't display as inline */
+    margin-bottom: 50px;
+}
+
+.navbar {
+    text-align: center;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.followingh{
+    text-align: center;
+}
+.custom-navbar {
+    background-color: #CAD3C8;
+}
+.profilecont{
+    margin-left: 100px;
+    margin-top: 200px;
+}
+.commentsec{
+    align-items: center;
+}
+.likeheart{
+    color: #dfe4ea;
+    font-size: 20px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.likeheart:hover{
+    color: darkred;
+}
+.custom-textarea {
+    width: 500px; /* Set the width to 100% */
+}
+.form-control:not(.searchbox) {
+    width: 100%; /* Set the width to 100% */
+    background-color: #fdfaf3 !important;
+}
+.card-body {
+    min-height: 150px; /* Adjust the minimum height as needed */
+}
+
+.custom-textarea {
+    width: 100%;
+    min-width: 730px;
+    padding: 12px; /* Adjust padding to increase apparent size */
+    font-size: 16px; /* Increase font size for better readability */
+    line-height: 1.5; /* Adjust line height for better spacing */
+    border: 1px solid #ccc; /* Add border for visual distinction */
+    border-radius: 5px; /* Add border-radius for rounded corners */
+    resize: vertical; /* Allow vertical resizing */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.followbtn {
+    margin-left: 140px;
+    margin-right: 140px;
+}
+
+@media (max-width: 768px) {
+    .followbtn {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+}
+
+@media (max-width: 576px) {
+    .followbtn {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+}
+.custom-switch{
+    margin-left: 20px;
+}
+.searchco{
+    margin-left: 20px;
+}
+.nav-link{
+    transition: transform 0.3s ease, color 0.3s ease;
+    color:#0a3d62 !important;
+    font-family: 'Sofia';
+    font-size: 19px;
+}
+
+.nav-link:hover{
+    transform: scale(1.2);
+    color: #58B19F !important;
+}
+.navbar-brand{
+    font-family: 'Lucida Handwriting', cursive;
+    font-size: 25px;
+    margin-left: 15px;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover{
+    color: #FD7272 !important;
+}
+.searchbutton{
+    color: #3c6382 !important;
+    border-color: #60a3bc;
+}
+.searchbutton:hover{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
+}
+.loginbtn{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
+}
+.loginbtn:hover{
+    background-color: #38ada9;
+    border-color: #38ada9;
+}
+.regbtn{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
+}
+.regbtn:hover{
+    background-color: #38ada9;
+    border-color: #38ada9;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(130, 204, 221, 0.7);
+    border-color: #82ccdd;
+}
+.noacc{
+    margin-top: 20px;
+}
+.card-header{
+    background-color: #CAD3C8 !important;
+
+}
+.userheader{
+    color: #3d3d3d !important;
+}
+
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header, .card-footer {
+    border: none;
+}
+
+.card-body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.5;
+}
+
+.like-link i {
+    transition: color 0.3s ease;
+}
+
+
+
+.edit-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.commenticon {
+    color: #95afc0;
+    margin-left: 10px;
+}
+
+.commenticon:hover {
+    color: #a4b0be;
+}
+
+.trash {
+    background-color: transparent;
+    border-color: transparent;
+    color: #dc3545;
+    margin-left: 10px;
+}
+
+.trash:focus {
+    outline: none;
+}
+.trash:hover {
+    color: #b33939;
+}
+
+.button-group > * {
+    margin-right: 3px;
+}
+
+.button-group > *:last-child {
+    margin-right: 0;
+}
+.card-footer{
+    background-color: #c4c7b4 !important;
+}
+.hearticon{
+    color: #f1f2f6;
+}
+.hearticon:checked{
+    color: #e3342f;
+}
+.like-link:hover i {
+    color: #e3342f;
+}
+.exndpls{
+    background-color: #218c74;
+    border-color: #218c74;
+}
+.exndpls:hover{
+    background-color: #33d9b2;
+    border-color: #33d9b2;
+}
+.exndpls:focus{
+    box-shadow: 0 4px 8px rgba(7, 153, 146, 0.6);
+    background-color: #218c74;
+    border-color: #218c74;
+}
+.exndpls:active {
+    background-color: #218c74;
+}
+.submitbtn{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
+}
+.submitbtn:hover{
+    background-color: #38ada9;
+    border-color: #38ada9;
+}
+.submitbtn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(130, 204, 221, 0.7);
+    border-color: #82ccdd;
+}

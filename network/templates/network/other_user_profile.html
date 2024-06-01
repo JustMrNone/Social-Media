@@ -1,0 +1,114 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="profilecont container-fluid">
+  <div class="row">
+    <div class="col-3">
+      <div class="card">
+        <!-- <img src="..." class="card-img-top" alt="..."> -->
+        <div class="card-body">
+          <h3>{{ profile_user.username }}</h3>
+        </div>
+        <hr>
+        <div class="container my-4">
+          <div class="row">
+              <div class="col-md-6 text-center">
+                  <div class="p-3 rounded">
+                      <p class="h4">Followers</p>
+                      <p class="display-4">{{ followers_count }}</p>
+                  </div>
+              </div>
+              <div class="col-md-6 text-center">
+                  <div class="p-3 rounded">
+                      <p class="h4">Following</p>
+                      <p class="display-4">{{ following_count }}</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+          <div class="card-body">
+            {% if user != profile_user %}
+              {% if not is_following %}
+                <form action="{% url 'view_profile' profile_user.id %}" method="post"> 
+                  {% csrf_token %}
+                  <input type="text" name="add_follow" value="add_follow" class="form-control" hidden>
+                  <input class="btn btn-primary" type="submit" value="Follow">
+                </form>
+              {% else %}
+                <form action="{% url 'view_profile' profile_user.id %}" method="post"> 
+                  {% csrf_token %}
+                  <input type="text" name="remove_follow" value="remove_follow" class="form-control" hidden>
+                  <input class="btn btn-danger" type="submit" value="Unfollow">
+                </form>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-9">
+      {% for post in posts %}
+        <div class="card mb-3">
+          <div class="card-header">
+              <a href="{% url 'view_profile' profile_user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
+          </div>
+          <div class="card-body">
+          <pre class="card-text" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">{{ post.body }}</pre>
+          <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}"><i class="fa fa-heart" aria-hidden="true" style="color:red"></i> <span> {{ post.total_likes }}</span></a>
+          </div>
+          <div class="card-footer text-muted d-flex justify-content-between">
+            <p>{{ post.timestamp }}</p>
+            <a href="{% url 'comment' post.id %}" class="btn btn-primary">Comment</a>
+          </div>
+        </div>
+        {% empty %}
+        <div>No posts.</div>
+      {% endfor %}
+    </div>  
+  </div>
+</div>
+
+{% if posts.has_other_pages %}
+<div class="container">
+  <div class="row justify-content-center">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if posts.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Previous</span>
+        </li>
+        {% endif %}
+        
+        {% for num in posts.paginator.page_range %}
+        {% if posts.number == num %}
+        <li class="page-item active">
+          <span class="page-link">{{ num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+        
+        {% if posts.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.next_page_number }}">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Next</span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</div>
+{% endif %}
+{% endblock body %}

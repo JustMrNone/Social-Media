@@ -1,0 +1,35 @@
+.dark-mode {
+    background-color: #333 !important;
+    color: #f7f1e3;
+}
+
+.dark-mode .navbar {
+    background-color: #aaa69d !important;
+}
+
+.dark-mode .nav-link {
+    color: #f7f1e3 !important;
+}
+.dark-mode .nav-link:hover{
+    color: #F8EFBA !important;
+}
+.dark-mode .card{
+    background-color: #454a4e !important;
+    border-color: #3c3e41;
+}
+.dark-mode .navbar-brand{
+    color: #f1f2f6 !important;
+}
+.dark-mode .navbar-brand:hover{
+    color: #b71540 !important;
+}
+.dark-mode .form-control:not(.searchbox) {
+    background-color: #d1ccc0 !important;
+    border-color: #4b4b4b;
+/* Adds a custom box shadow*/
+}
+.dark-mode .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 251, 251, 0.25);
+    border-color: #4b4b4b;
+}
+

@@ -1,0 +1,22 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<div class="container my-4">
+    <h2 class="text-center mb-4">Search Results for "{{ query }}"</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {% if users %}
+                <div class="list-group">
+                    {% for user in users %}
+                        <a href="{% url 'user' user.id %}" class="list-group-item list-group-item-action">
+                            {{ user.username }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center mt-4">No users found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

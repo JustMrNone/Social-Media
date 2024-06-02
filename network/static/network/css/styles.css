@@ -180,8 +180,7 @@ textarea.form-control {
     margin-top: 20px;
 }
 .card-header{
-    background-color: #CAD3C8 !important;
-
+    background-color: #eaebf0 !important;
 }
 .userheader{
     color: #3d3d3d !important;
@@ -347,4 +346,7 @@ textarea.form-control {
     justify-content: center;
     margin: 0 auto; 
     margin-bottom: 20px;
+}
+.edit-link{
+    color: #1e272e !important;
 }

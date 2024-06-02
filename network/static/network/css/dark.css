@@ -2,7 +2,6 @@
     background-color: #333 !important;
     color: #f7f1e3;
 }
-
 .dark-mode .navbar {
     background-color: #aaa69d !important;
 }
@@ -33,3 +32,16 @@
     border-color: #4b4b4b;
 }
 
+.dark-mode .card-header{
+    background-color: #454a4e !important;
+}
+.dark-mode .card-footer {
+    background-color: #aaa69d !important;
+}
+.dark-mode .userheader {
+    color: #f7f1e3 !important;
+}
+
+.dark-mode .edit-link{
+    color: #f7f1e3 !important;
+}

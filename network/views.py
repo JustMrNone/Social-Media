@@ -173,7 +173,6 @@ def logoutFunc(request):
     return HttpResponseRedirect(reverse("index"))
 
 
-@login_required
 def comment(request, post_id):
     post = Post.objects.get(pk=post_id)
 
@@ -198,13 +197,14 @@ def comment(request, post_id):
         new_comment = Comment(comment=comment_body, user=request.user, post=post)
         new_comment.save()
 
+        # Redirect to the index page after saving the comment
+        return redirect(reverse('index'))
+
     comments = Comment.objects.filter(post=post)
     return render(request, "network/comment.html", {
         'post': post,
         'comments': comments
     })
-    
-    
 @login_required
 def following(request):
     # Retrieve the current user

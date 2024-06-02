@@ -39,7 +39,7 @@
                 <a href="{% url 'user' post.user.id %}" class="text-decoration-none userheader">{{ post.user }}</a>
             </div>
             {% if post.user.id == request.user.id %}
-                <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
+                <a href="#/" class="text-decoration-none edit-link" data-id="post-{{ post.id }}">Edit</a>
             {% endif %}
         </div>
         <div class="card-body">

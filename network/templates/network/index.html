@@ -9,13 +9,16 @@
         <div class="text-right">
             <button class="btn btn-primary exndpls" id="toggleForm"><i class="fas fa-plus"></i></button>
         </div>
-        <form id="postForm" action="{% url 'index' %}" class="mb-3" method="post" style="display: none;"> 
+        <form id="postForm" action="{% url 'index' %}" class="mb-3" method="post" enctype="multipart/form-data" style="display: none;">
             {% csrf_token %}
             <div class="form-group">
                 <label for="postContent">New Post:</label>
-                <textarea class="form-control" id="postContent" name="post" rows="3" placeholder="Say Something, Anything..."></textarea>
+                <textarea class="form-control" id="postContent" name="body" rows="3" placeholder="Say Something, Anything..."></textarea>
             </div>
-            <div class="text-right">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <input type="file" class="form-control d-none" id="postPicture" name="picture">
+                <label for="postPicture" class="btn btn-secondary attachment-btn"><i class="fas fa-paperclip"></i></label>
                 <input class="btn btn-primary submitbtn" type="submit" value="Post">
             </div>
         </form>
@@ -23,6 +26,13 @@
     {% endif %}
     {% for post in posts %}
     <div class="card mb-3" id="post-{{ post.id }}">
+        {% if post.picture %}
+        <div class="card-img-top text-center">
+            <div class="image-frame">
+                <img src="{{ post.picture.url }}" class="img-fluid framed-image" alt="Attached Picture">
+            </div>
+        </div>
+        {% endif %}
         <div class="card-header d-flex justify-content-between align-items-center bg-primary">
             <div class="d-flex align-items-center">
                 {% if post.user.picture and post.user.picture.url %}
@@ -57,50 +67,8 @@
             </div>
         </div>
     </div>
-{% empty %}
+    {% empty %}
     <div class="text-center text-muted">No posts yet.</div>
-{% endfor %}
-    {% if pages.num_pages > 1 %}
-    <div class="row justify-content-center">
-        <nav aria-label="Search results pages">
-            <ul class="pagination">
-                {% if posts.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="?page=#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-
-                {% for page_num in pages.page_range %}
-                <li class="page-item {% if page_num == posts.number %}active{% endif %}">
-                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
-                </li>
-                {% endfor %}
-
-                {% if posts.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="?page=#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </div>
-    {% endif %}
+    {% endfor %}
 </div>
-
 {% endblock %}

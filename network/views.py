@@ -9,7 +9,7 @@ import datetime
 from .models import User, UserFollowing, Post, Comment, Like
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .forms import ProfileForm
+from .forms import ProfileForm, PostForm
 @login_required
 def search(request):
     query = request.GET.get('q')
@@ -73,19 +73,36 @@ def loginFunc(request):
     
 @login_required
 def index(request):
+    error_message = None
     if request.method == "POST":
-        # If a POST request is received, create a new post
-        post = Post(user=request.user, body=request.POST["post"], comments=None)
-        post.save()
+        post_body = request.POST.get("post", "").strip()
+        if not post_body:
+            error_message = "Post body cannot be empty"
+            
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.comments = None
+            post.save()
+            return redirect('index')
+    else:
+        form = PostForm()
+    
     # Retrieve all posts from the database, ordered by timestamp
     posts = Post.objects.all().order_by('-timestamp')
+    
     # Paginate the posts
     p = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
+    
     return render(request, "network/index.html", {
+        "form": form,
         "posts": page_obj,
-        "pages": p
+        "pages": p,
+        "error_message": error_message,
+        
     })
 @login_required
 def logoutFunc(request):

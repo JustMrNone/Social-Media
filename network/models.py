@@ -23,14 +23,19 @@ class UserFollowing(models.Model):
         return f"{self.user_id} follows {self.following_user_id}"
 
 # Model representing a post
+
 class Post(models.Model):
-    id = models.BigAutoField(primary_key=True)  # Explicitly define primary key as BigAutoField
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="posts")
     body = models.TextField(blank=True)
     comments = models.ForeignKey("Comment", null=True, on_delete=models.CASCADE, related_name="comments")
     total_likes = models.PositiveIntegerField(default=0)
-    user_likes = models.ManyToManyField(User)
+    user_likes = models.ManyToManyField("User", related_name="liked_posts")
     timestamp = models.DateTimeField(auto_now_add=True)
+    picture = models.ImageField(upload_to='post_pics', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.body[:20]}"
 
 # Model representing a comment on a post
 class Comment(models.Model):

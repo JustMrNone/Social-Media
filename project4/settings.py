@@ -27,9 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+LOGIN_ATTEMPT_TIMEOUT = 900  # 15 minutes in seconds
 # Application definition
-
+MAX_LOGIN_ATTEMPTS = 5
 INSTALLED_APPS = [
     'network',
     'django.contrib.admin',

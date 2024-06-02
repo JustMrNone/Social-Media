@@ -216,10 +216,12 @@ textarea.form-control {
 .commenticon {
     color: #95afc0;
     margin-left: 10px;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .commenticon:hover {
     color: #a4b0be;
+    transform: scale(1.3);
 }
 
 .trash {
@@ -227,6 +229,7 @@ textarea.form-control {
     border-color: transparent;
     color: #dc3545;
     margin-left: 10px;
+    transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .trash:focus {
@@ -234,6 +237,7 @@ textarea.form-control {
 }
 .trash:hover {
     color: #b33939;
+    transform: scale(1.3)
 }
 
 .button-group > * {

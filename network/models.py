@@ -2,9 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Custom User model inheriting from AbstractUser
+
 class User(AbstractUser):
     # Add a field for profile picture
     picture = models.ImageField(upload_to='profile_pics', default='default.jpg', blank=True)
+    
+    # Add a field for login attempts
+    login_attempts = models.IntegerField(default=0)
 
     def __str__(self):
         return self.username

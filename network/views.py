@@ -1,5 +1,5 @@
 import json
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
@@ -10,6 +10,10 @@ from .models import User, UserFollowing, Post, Comment, Like
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .forms import ProfileForm, PostForm
+import re
+from django.core.cache import cache
+from django.conf import settings
+
 @login_required
 def search(request):
     query = request.GET.get('q')
@@ -35,15 +39,44 @@ def registerFunc(request):
             return render(request, "network/register.html", {
                 "message": "Passwords must match."
             })
+        
+        # Check if email is already registered
+        if get_user_model().objects.filter(email=email).exists():
+            return render(request, "network/register.html", {
+                "message": "Email is already registered."
+            })
+        
+        # Validate password (e.g., minimum length, complexity)
+        if len(password) < 8:
+            return render(request, "network/register.html", {
+                "message": "Password must be at least 8 characters long."
+            })
+        if not re.search("[A-Z]", password) or not re.search("[a-z]", password) or not re.search("[0-9]", password):
+            return render(request, "network/register.html", {
+                "message": "Password must contain at least one uppercase letter, one lowercase letter, and one digit."
+            })
 
+        # Check if the user has reached the maximum registration attempts within the specified time period
+        ip_address = request.META.get("REMOTE_ADDR")  # Retrieve IP address
+        cache_key = f"registration_attempts_{ip_address}"
+        registration_attempts = cache.get(cache_key, 0)
+        if registration_attempts >= settings.MAX_REGISTRATION_ATTEMPTS:
+            return render(request, "network/register.html", {
+                "message": "Maximum registration attempts exceeded. Please try again later."
+            })
+        
         try:
             # Create a new user object and save it to the database
-            user = User.objects.create_user(username, email, password)
+            user = get_user_model().objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
             return render(request, "network/register.html", {
                 "message": "Username already taken."
             })
+
+        # Increase registration attempts counter and set expiration time
+        cache.set(cache_key, registration_attempts + 1, timeout=settings.REGISTRATION_ATTEMPT_TIMEOUT)
+
         # Log the user in and redirect to the index page
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
@@ -53,23 +86,51 @@ def registerFunc(request):
 def loginFunc(request):
     if request.method == "POST":
         # Retrieve user input from the login form
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         
-        # Authenticate user credentials
-        user = authenticate(request, username=username, password=password)
+        # Get the User model
+        User = get_user_model()
+        
+        # Check if the user exists
+        if User.objects.filter(username=username).exists():
+            # Retrieve the user object
+            user = User.objects.get(username=username)
+            
+            # Define the cache key based on the user's IP address or username
+            cache_key = f"login_attempts_{username}"  # You can use IP address instead if preferred
+            
+            # Check if the cache key exists
+            if cache.get(cache_key):
+                # If the cache key exists, the user has exceeded the maximum login attempts
+                return render(request, "network/login.html", {
+                    "message": "Maximum login attempts exceeded. Please try again later."
+                })
 
-        if user is not None:
-            # If authentication is successful, log the user in and redirect to the index page
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            # Authenticate user credentials
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                # If authentication is successful, log the user in and redirect to the index page
+                login(request, user)
+                # Reset login attempts counter
+                cache.delete(cache_key)
+                return HttpResponseRedirect(reverse("index"))
+            else:
+                # If authentication fails, render the login page with an error message
+                # Increase login attempts counter and set expiration time
+                cache.set(cache_key, "attempt", timeout=settings.LOGIN_ATTEMPT_TIMEOUT)
+                return render(request, "network/login.html", {
+                    "message": "Invalid username and/or password."
+                })
         else:
-            # If authentication fails, render the login page with an error message
+            # If the user does not exist, render the login page with an error message
             return render(request, "network/login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
         return render(request, "network/login.html")
+    
     
 @login_required
 def index(request):
@@ -104,11 +165,13 @@ def index(request):
         "error_message": error_message,
         
     })
+    
 @login_required
 def logoutFunc(request):
     # Log the user out and redirect to the index page
     logout(request)
     return HttpResponseRedirect(reverse("index"))
+
 
 @login_required
 def comment(request, post_id):
@@ -140,6 +203,8 @@ def comment(request, post_id):
         'post': post,
         'comments': comments
     })
+    
+    
 @login_required
 def following(request):
     # Retrieve posts from followed users and paginate them
@@ -161,6 +226,7 @@ def following(request):
         "posts": page_obj,
         "pages": p
     })
+
 
 @login_required
 def like(request, post_id):
@@ -227,6 +293,8 @@ def post(request, post_id):
         post.save()
         return HttpResponse(status=204)
 
+
+
 @login_required
 def user(request, user_id):
     requesting_user = get_object_or_404(User, pk=request.user.id)
@@ -261,22 +329,7 @@ def user(request, user_id):
         "is_following": is_following
     })
 
-
-def follow_user(follower, following_user):
-    if not follower.following.filter(pk=following_user.id).exists():
-        follower.following.add(following_user)
-        following_user.followers.add(follower)
-        follower.save()
-        following_user.save()
-
-def unfollow_user(follower, following_user):
-    if follower.following.filter(pk=following_user.id).exists():
-        follower.following.remove(following_user)
-        following_user.followers.remove(follower)
-        follower.save()
-        following_user.save()
-        
-    
+           
 @login_required
 def view_profile(request, user_id):
     profile_user = get_object_or_404(User, pk=user_id)
@@ -303,6 +356,8 @@ def view_profile(request, user_id):
         "posts": page_obj,
         "is_following": is_following
     })
+    
+
 def follow_user(requesting_user, user_to_follow):
     if not UserFollowing.objects.filter(user_id=requesting_user, following_user_id=user_to_follow).exists():
         UserFollowing.objects.create(user_id=requesting_user, following_user_id=user_to_follow)
@@ -311,6 +366,7 @@ def unfollow_user(requesting_user, user_to_unfollow):
     follow_instance = UserFollowing.objects.filter(user_id=requesting_user, following_user_id=user_to_unfollow)
     if follow_instance.exists():
         follow_instance.delete()
+      
         
 @login_required
 def edit_profile(request, user_id):

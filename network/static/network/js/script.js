@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return cookieValue;
     }
 
+
     // Function to create an edit form for a post
     function createEditForm(parentElem) {
         // Get the body element of the post
@@ -137,27 +138,56 @@ document.addEventListener('DOMContentLoaded', function () {
         editButton.addEventListener('click', handleEdit);
     }
 
+
     function handleLike(e) {
         e.preventDefault();
-        const postId = e.currentTarget.getAttribute('data-id').split('-')[1];
-        const csrfToken = getCookie('csrftoken');
-        const request = new Request(
-            `/like/${postId}`,
-            { headers: { 'X-CSRFToken': csrfToken } }
-        );
+        // Check if a request is already in progress
+        if (likeInProgress) {
+            return; // Do nothing if a request is in progress
+        }
+        likeInProgress = true; // Set the flag to indicate that a request is in progress
     
-        fetch(request, {
-            method: 'POST',
+        const likeButton = e.currentTarget;
+        const postId = likeButton.getAttribute('data-id').split('-')[1];
+        const liked = likeButton.getAttribute('data-liked') === 'true'; // Check if the post is already liked by the user
+        const csrfToken = getCookie('csrftoken');
+        const method = liked ? 'DELETE' : 'POST'; // Use DELETE method if the post is already liked, otherwise use POST
+        const url = liked ? `/like/${postId}/remove` : `/like/${postId}`; // URL to add or remove the like
+    
+        fetch(url, {
+            method: method,
             mode: 'same-origin',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ id: postId }),
         }).then(() => {
             fetch(`/like/${postId}`)
                 .then(response => response.json())
                 .then(likes => {
-                    e.currentTarget.querySelector('span').innerHTML = likes;
+                    // Update the like count
+                    likeButton.querySelector('span').innerHTML = likes;
+                    // Toggle the 'data-liked' attribute to reflect the current like status
+                    likeButton.setAttribute('data-liked', !liked);
+                    // Toggle the CSS classes based on the liked status
+                    likeButton.classList.toggle('liked', !liked);
+                    likeButton.classList.toggle('unliked', liked);
+                    // Reset the flag after processing
+                    likeInProgress = false;
                 });
+        }).catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+            // Reset the flag in case of error
+            likeInProgress = false;
         });
     }
+    // Add event listeners to each 'like-link' button
+    document.querySelectorAll('.like-link').forEach(button => {
+        button.removeEventListener('click', handleLike); // Ensure no duplicate listeners
+        button.addEventListener('click', handleLike);
+    });
     
     function handleEdit(e) {
         e.preventDefault();

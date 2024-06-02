@@ -13,7 +13,7 @@ from .forms import ProfileForm, PostForm
 import re
 from django.core.cache import cache
 from django.conf import settings
-
+from django.views.decorators.http import require_POST, require_GET
 @login_required
 def search(request):
     query = request.GET.get('q')
@@ -227,46 +227,22 @@ def following(request):
 def like(request, post_id):
     if request.method == "POST":
         post = Post.objects.get(pk=post_id)
-
-        try:
-            like = Like.objects.get(user=request.user, post=post)
-            print(like)
-            if like and like.currently_liked == True:
-                like.currently_liked = False
-                post.total_likes -= 1
-                post.user_likes.remove(request.user)
-                post.save()           
-                like.save()
-
-                return HttpResponse(status=204)
-            elif like and like.currently_liked == False:
-                print('else', like)
-                like.currently_liked = True
-                post.total_likes += 1
-                post.user_likes.add(request.user)
-                post.save()
-                like.save()
-
-                return HttpResponse(status=204)
-        
-
-        except Like.DoesNotExist:
-            new_like = Like(user=request.user, post=post, currently_liked=True)
-
+        like_queryset = Like.objects.filter(user=request.user, post=post)
+        if like_queryset.exists():
+            # If the user has already liked the post, unlike it
+            like_queryset.delete()
+            post.total_likes -= 1
+        else:
+            # If the user hasn't liked the post, create a new like
+            Like.objects.create(user=request.user, post=post)
             post.total_likes += 1
-            post.user_likes.add(request.user)
-            post.save()
-            new_like.save()
-
-            return HttpResponse(status=204)
-    
-    if request.method == "GET":
-        print("GET METHOD")
+        post.save()
+        return HttpResponse(status=204)
+    elif request.method == "GET":
         post = Post.objects.get(pk=post_id)
-        print("NUMBER OF LIKES", post.total_likes)
         return JsonResponse(post.total_likes, safe=False)
-
-
+    
+    
 @login_required
 def post(request, post_id):
 

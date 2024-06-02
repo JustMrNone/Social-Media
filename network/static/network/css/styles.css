@@ -345,3 +345,11 @@ textarea.form-control {
 .postbody{
     margin-bottom: 0px;
 }
+
+.like-link.liked {
+    color: red; /* Set the color to red when liked */
+}
+
+.like-link.unliked {
+    color: white; /* Set the color to white when unliked */
+}

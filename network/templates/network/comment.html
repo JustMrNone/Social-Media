@@ -3,30 +3,35 @@
 
 {% block body %}
 <div class="container-fluid">
-    <div class="card">
-      <div class="card-header">
-          <a href="{% url 'user' post.user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
-      </div>
-      <div class="card-body">
-      {% if post.user == request.user %}
-      <a href="#/" class="text-decoration-none">Edit</a>
-      {% endif %}
-      <p class="card-text">{{ post.body }}</p>
-      <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}"><i class="fa fa-heart" aria-hidden="true" style="color:red"></i> <span> {{ post.total_likes }}</span></a>
-      </div>
-      <div class="card-footer text-muted d-flex justify-content-between">
-        <p>{{ post.timestamp }}</p>
-        {% if post.user == request.user %}
-          <form action="{% url 'post' post.id %}" method="post">
-              {% csrf_token %}
-              <div class="form-actions">
-                  <input type="text" name="remove_post" value="remove_post" class="form-control" hidden>
-                  <button type="submit" class="btn btn-danger">Delete</button> 
-              </div>
-          </form>
+    <div class="card mb-3" id="post-{{ post.id }}">
+        {% if post.picture %}
+            <img src="{{ post.picture.url }}" class="card-img-top" alt="Post Picture">
         {% endif %}
-      </div>
-  </div>
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary">
+            <a href="{% url 'user' post.user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
+            {% if post.user == request.user %}
+                <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ post.body }}</p>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-between align-items-center">
+            <p>{{ post.timestamp }}</p>
+            {% if post.user == request.user %}
+                <form action="{% url 'post' post.id %}" method="post">
+                    <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}">
+                        <i class="fa fa-heart hearticon" aria-hidden="true"></i>
+                        <span> {{ post.total_likes }}</span>
+                      </a>
+                    {% csrf_token %}
+                    <input type="text" name="remove_post" value="remove_post" class="form-control" hidden>
+                    <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button> 
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
   <div class="container my-4">
     <div class="row justify-content-center">
         <div class="col-md-8 mx-auto">
@@ -49,10 +54,7 @@
                     </div>
                     <div class="card-body">
                         <p class="card-text">{{ comment.comment }}</p>
-                        <a href="#/" class="text-decoration-none like-link" data-id="comment-{{ comment.id }}">
-                            <i class="fa fa-heart" aria-hidden="true" style="color:red"></i> 
-                            <span>{{ comment.total_likes }}</span>
-                        </a>
+
                     </div>
                     <div class="card-footer text-muted d-flex justify-content-between">
                         <p>{{ comment.timestamp }}</p>
@@ -60,9 +62,11 @@
                         <form action="{% url 'comment' post.id %}" method="post">
                             {% csrf_token %}
                             <div class="form-actions">
+                                
                                 <input type='text' value="{{ comment.id }}" name='comment_id' hidden>
                                 <input type="text" name="remove_comment" value="remove_comment" class="form-control" hidden>
-                                <button type="submit" class="btn btn-danger">Delete Comment</button> 
+                                <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button>
+                    </form> 
                             </div>
                         </form>
                         {% endif %}

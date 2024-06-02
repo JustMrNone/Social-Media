@@ -207,27 +207,22 @@ def comment(request, post_id):
     
 @login_required
 def following(request):
-    # Retrieve posts from followed users and paginate them
+    # Retrieve the current user
     user = User.objects.get(pk=request.user.id)
-    followers = user.followers.all()
-    posts = []
-
-    if followers.exists():
-        for follower in followers:
-            posts.extend(Post.objects.filter(user=follower.user_id))
-
-    posts = sorted(posts, key=lambda post: post.timestamp, reverse=True)
-
-    p = Paginator(posts, 10)  
+    
+    # Retrieve all users followed by the current user
+    followed_users = user.following.all().values_list('following_user_id', flat=True)
+    
+    # Retrieve posts from followed users and paginate them
+    posts = Post.objects.filter(user_id__in=followed_users).order_by('-timestamp')
+    paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
-    page_obj = p.get_page(page_number)
+    page_obj = paginator.get_page(page_number)
 
     return render(request, "network/following.html", {
         "posts": page_obj,
-        "pages": p
+        "pages": paginator
     })
-
-
 @login_required
 def like(request, post_id):
     if request.method == "POST":
@@ -317,6 +312,9 @@ def user(request, user_id):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Extract the picture URL for each post
+    post_pictures = [post.picture.url for post in user_posts if post.picture]
+
     return render(request, "network/profile.html", {
         "user": profile_user,
         "following": following,
@@ -326,9 +324,26 @@ def user(request, user_id):
         "posts": page_obj,
         "paginator": paginator,
         "requesting_user": requesting_user,
-        "is_following": is_following
+        "is_following": is_following,
+        "post_pictures": post_pictures  # Pass the list of picture URLs to the template
     })
+    
+def follow_user(follower, following_user):
+    if not follower.following.filter(pk=following_user.id).exists():
+        follower.following.add(following_user)
+        following_user.followers.add(follower)
+        follower.save()
+        following_user.save()
 
+
+
+def unfollow_user(follower, following_user):
+    if follower.following.filter(pk=following_user.id).exists():
+        follower.following.remove(following_user)
+        following_user.followers.remove(follower)
+        follower.save()
+        following_user.save()
+        
            
 @login_required
 def view_profile(request, user_id):
@@ -366,7 +381,6 @@ def unfollow_user(requesting_user, user_to_unfollow):
     follow_instance = UserFollowing.objects.filter(user_id=requesting_user, following_user_id=user_to_unfollow)
     if follow_instance.exists():
         follow_instance.delete()
-      
         
 @login_required
 def edit_profile(request, user_id):

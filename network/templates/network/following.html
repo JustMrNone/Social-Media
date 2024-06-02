@@ -3,42 +3,50 @@
 
 {% block body %}
 <div class="container-fluid">
-  <h1 class="followingh">New Posts</h1>
+    <h1 class="followingh">New Posts</h1>
     {% for post in posts %}
     <div class="card mb-3" id="post-{{ post.id }}">
-        <div class="card-header d-flex justify-content-between align-items-center">
-           <a href="{% url 'user' post.user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
-           {% if post.user == request.user %}
-           <a href="#/" class="text-decoration-none edit-link" data-id="post-{{ post.id }}">Edit</a>
-           {% endif %}
-        </div>
-        <div class="card-body d-flex justify-content-between align-items-center">
-            <p class="card-text">{{ post.body }}</p>
-            <div class="d-flex justify-content-between align-items-center">
-                <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}">
-                    <i class="fa fa-heart likeheart" aria-hidden="true"></i>
-                    <span> {{ post.total_likes }}</span>
-                </a>
+        {% if post.picture %}
+            <img src="{{ post.picture.url }}" class="card-img-top" alt="Post Picture">
+        {% endif %}
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary">
+            <div class="d-flex align-items-center">
+                {% if post.user.picture and post.user.picture.url %}
+                    <img src="{{ post.user.picture.url }}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
+                {% else %}
+                    <img src="{% static 'network/img/Default.png' %}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
+                {% endif %}
+                <a href="{% url 'user' post.user.id %}" class="text-decoration-none userheader">{{ post.user }}</a>
             </div>
-            
-        </div>
-        <div class="card-footer text-muted d-flex justify-content-between">
-            <p>{{ post.timestamp }}</p>
-            {% if post.user == request.user %}
-            <form action="{% url 'post' post.id %}" method="post">
-                {% csrf_token %}
-                <div class="form-actions">
-                    <input type="text" name="remove_post" value="remove_post" class="form-control" hidden>
-
-                    <button type="submit" class="btn btn-danger">Delete Post</button> 
-                </div>
-            </form>
-            {% else %}
-            <a href="{% url 'comment' post.id %}" class="btn btn-primary">Comment</a>
+            {% if post.user.id == request.user.id %}
+                <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
             {% endif %}
         </div>
+        <div class="card-body">
+            <p class="card-text">{{ post.body }}</p>
+        </div>
+        <div class="card-footer d-flex justify-content-between align-items-center bg-light">
+            <p class="mb-0">{{ post.timestamp }}</p>
+            <div class="d-flex align-items-center button-group">
+                <a href="#/" class="text-decoration-none like-link me-1" data-id="post-{{ post.id }}">
+                    <i class="fa fa-heart hearticon" aria-hidden="true"></i>
+                    <span>{{ post.total_likes }}</span>
+                </a>
+                <a href="{% url 'comment' post.id %}" class="me-1 commenticon"><i class="fas fa-comment-dots"></i></a>
+                {% if post.user.id == request.user.id %}
+                    <form action="{% url 'post' post.id %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="remove_post" value="remove_post" class="form-control">
+                        <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% endfor %}
+{% empty %}
+    <div class="text-center text-muted">No posts yet.</div>
+{% endfor %}
+</div>
 
     {% if pages.num_pages > 1 %}
     <div class="row justify-content-center">
@@ -77,7 +85,7 @@
                 {% endif %}
             </ul>
         </nav>
-        </div>
+    </div>
     {% endif %}
-</div>  
+</div>
 {% endblock %}

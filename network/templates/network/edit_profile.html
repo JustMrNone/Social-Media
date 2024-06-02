@@ -1,6 +1,5 @@
-<!-- edit_profile.html -->
 {% extends "network/layout.html" %}
-
+{% load static %}
 {% block body %}
 <div class="container">
   <h2>Edit Profile</h2>
@@ -15,7 +14,13 @@
       {{ profile_form.email }}
     </div>
     <div class="form-group">
+      
       <label for="id_picture">Profile Picture:</label>
+      {% if user.picture and user.picture.url %}
+      <img src="{{ user.picture.url }}" alt="Profile Picture" class="img-thumbnail" width="200" height="200">
+      {% else %}
+      <img src="{% static 'network/img/Default.png' %}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
+      {% endif %}
       {{ profile_form.picture }}
     </div>
     <button type="submit" class="btn btn-primary">Save Changes</button>

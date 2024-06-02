@@ -9,7 +9,11 @@
         <div class="card-body text-center">
 
 
-          <img  src="{% static 'network/img/Default.png' %}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
+          {% if user.picture and user.picture.url %}
+          <img src="{{ user.picture.url }}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
+          {% else %}
+          <img src="{% static 'network/img/Default.png' %}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
+          {% endif %}
 
 
           <h3>{{ user.username }}</h3>

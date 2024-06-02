@@ -1,28 +1,19 @@
 {% extends "network/layout.html" %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block body %}
 <div class="container">
   <h2>Edit Profile</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="form-group">
-      <label for="id_username">Username:</label>
-      {{ profile_form.username }}
-    </div>
-    <div class="form-group">
-      <label for="id_email">Email:</label>
-      {{ profile_form.email }}
-    </div>
-    <div class="form-group">
-      
-      <label for="id_picture">Profile Picture:</label>
+    <div class="form-group text-center">
       {% if user.picture and user.picture.url %}
-      <img src="{{ user.picture.url }}" alt="Profile Picture" class="img-thumbnail" width="200" height="200">
+      <img src="{{ user.picture.url }}" alt="Profile Picture" class="img-thumbnail mb-3" width="150" height="150">
       {% else %}
       <img src="{% static 'network/img/Default.png' %}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
       {% endif %}
-      {{ profile_form.picture }}
     </div>
+    {{ profile_form|crispy }}
     <button type="submit" class="btn btn-primary">Save Changes</button>
   </form>
 </div>

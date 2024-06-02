@@ -24,7 +24,14 @@
     {% for post in posts %}
     <div class="card mb-3" id="post-{{ post.id }}">
         <div class="card-header d-flex justify-content-between align-items-center bg-primary">
-            <a href="{% url 'user' post.user.id %}" class="text-decoration-none userheader">{{ post.user }}</a>
+            <div class="d-flex align-items-center">
+                {% if post.user.picture and post.user.picture.url %}
+                <img src="{{ post.user.picture.url }}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
+                {% else %}
+                <img src="{% static 'network/img/Default.png' %}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
+                {% endif %}
+                <a href="{% url 'user' post.user.id %}" class="text-decoration-none userheader">{{ post.user }}</a>
+            </div>
             {% if post.user.id == request.user.id %}
             <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
             {% endif %}

@@ -1,5 +1,7 @@
 from django import forms
 from .models import User
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -8,4 +10,6 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProfileForm, self).__init__(*args, **kwargs)
-        self.fields['picture'].widget.attrs.update({'class': 'form-control-file'})
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.add_input(Submit('submit', 'Save Changes'))

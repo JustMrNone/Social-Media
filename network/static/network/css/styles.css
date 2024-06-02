@@ -283,3 +283,6 @@ textarea.form-control {
     box-shadow: 0 0 0 0.2rem rgba(130, 204, 221, 0.7);
     border-color: #82ccdd;
 }
+.smlprofilep{
+    margin-right: 10px;
+}

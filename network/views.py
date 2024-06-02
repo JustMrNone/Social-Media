@@ -13,7 +13,7 @@ from .forms import ProfileForm, PostForm
 import re
 from django.core.cache import cache
 from django.conf import settings
-from django.views.decorators.http import require_POST, require_GET
+
 @login_required
 def search(request):
     query = request.GET.get('q')
@@ -215,7 +215,7 @@ def following(request):
     
     # Retrieve posts from followed users and paginate them
     posts = Post.objects.filter(user_id__in=followed_users).order_by('-timestamp')
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(posts, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

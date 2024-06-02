@@ -2,16 +2,22 @@
 {% load static %}
 
 {% block body %}
+
 <div class="container-fluid">
+
     <div class="card mb-3" id="post-{{ post.id }}">
         {% if post.picture %}
+
             <img src="{{ post.picture.url }}" class="card-img-top" alt="Post Picture">
         {% endif %}
+
         <div class="card-header d-flex justify-content-between align-items-center bg-primary">
             <a href="{% url 'user' post.user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
             {% if post.user == request.user %}
+
                 <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
             {% endif %}
+
         </div>
         <div class="card-body">
             <p class="card-text">{{ post.body }}</p>
@@ -19,16 +25,19 @@
         <div class="card-footer text-muted d-flex justify-content-between align-items-center">
             <p>{{ post.timestamp }}</p>
             {% if post.user == request.user %}
+
                 <form action="{% url 'post' post.id %}" method="post">
                     <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}">
                         <i class="fa fa-heart hearticon" aria-hidden="true"></i>
                         <span> {{ post.total_likes }}</span>
                       </a>
                     {% csrf_token %}
+
                     <input type="text" name="remove_post" value="remove_post" class="form-control" hidden>
                     <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button> 
                 </form>
             {% endif %}
+
         </div>
     </div>
 </div>
@@ -37,43 +46,52 @@
         <div class="col-md-8 mx-auto">
             <div class="commentsec">
                 {% if user.is_authenticated %}
+
                 <form action="{% url 'comment' post.id %}" method="post"> 
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="postComment">Comment</label>
-                        <textarea class="form-control" id="postComment" name="post" rows="3"></textarea>
-                    </div>
-                    <input class="btn btn-primary" type="submit" value="Post">
-                </form> 
-                {% endif %} 
+                        {% csrf_token %}
 
-                {% for comment in comments %}
-                <div class="card my-3" id="comment-{{ comment.id }}">
-                    <div class="card-header">
-                        <a href="{% url 'user' comment.user.id %}" class="text-decoration-none text-muted">{{ comment.user }}</a>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">{{ comment.comment }}</p>
-
-                    </div>
-                    <div class="card-footer text-muted d-flex justify-content-between">
-                        <p>{{ comment.timestamp }}</p>
-                        {% if comment.user == request.user %}
-                        <form action="{% url 'comment' post.id %}" method="post">
-                            {% csrf_token %}
-                            <div class="form-actions">
-                                
-                                <input type='text' value="{{ comment.id }}" name='comment_id' hidden>
-                                <input type="text" name="remove_comment" value="remove_comment" class="form-control" hidden>
-                                <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button>
+                        <div class="form-group">
+                            <label for="postComment">Comment</label>
+                            <textarea class="form-control" id="postComment" name="post" rows="3"></textarea>
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Post">
                     </form> 
-                            </div>
-                        </form>
+                    {% endif %} 
+
+                    {% for comment in comments %}
+
+                    <div class="card my-3" id="comment-{{ comment.id }}">
+                        <div class="card-header">
+                            <a href="{% url 'user' comment.user.id %}" class="text-decoration-none text-muted">{{ comment.user }}</a>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">{{ comment.comment }}</p>
+
+                        </div>
+                        <div class="card-footer text-muted d-flex justify-content-between">
+                            <p>{{ comment.timestamp }}</p>
+                            {% if comment.user == request.user %}
+
+                            <form action="{% url 'comment' post.id %}" method="post">
+                                {% csrf_token %}
+
+                                <div class="form-actions">
+                                    
+                                    <input type='text' value="{{ comment.id }}" name='comment_id' hidden>
+                                    <input type="text" name="remove_comment" value="remove_comment" class="form-control" hidden>
+                                    <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button>
+                            </form> 
+                                </div>
+                </form>
+
                         {% endif %}
                     </div>
                 </div>
+
                 {% empty %}
+
                 <div class="text-center">No comments.</div>
+
                 {% endfor %}
             </div>
         </div>

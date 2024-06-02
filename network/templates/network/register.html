@@ -1,16 +1,20 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+
 <div class="d-flex justify-content-center align-items-center" style="min-height: 75vh;">
     <div class="card p-4" style="max-width: 500px; width: 100%;">
         <h2 class="text-center">Register</h2>
 
         {% if message %}
+
             <div>{{ message }}</div>
+
         {% endif %}
 
         <form action="{% url 'register' %}" method="post">
             {% csrf_token %}
+
             <div class="form-group">
                 <input class="form-control" autofocus type="text" name="username" placeholder="Username">
             </div>
@@ -29,4 +33,5 @@
         <p class="text-center noacc">Already have an account? <a href="{% url 'login' %}">Log In here.</a></p>
     </div>
 </div>
+
 {% endblock body %}

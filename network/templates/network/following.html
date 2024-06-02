@@ -3,22 +3,32 @@
 
 {% block body %}
 <div class="container-fluid">
+
     <h1 class="followingh">New Posts</h1>
+
     {% for post in posts %}
+
     <div class="card mb-3" id="post-{{ post.id }}">
+
         {% if post.picture %}
+
             <img src="{{ post.picture.url }}" class="card-img-top" alt="Post Picture">
         {% endif %}
         <div class="card-header d-flex justify-content-between align-items-center bg-primary">
             <div class="d-flex align-items-center">
+
                 {% if post.user.picture and post.user.picture.url %}
+
                     <img src="{{ post.user.picture.url }}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
                 {% else %}
+
                     <img src="{% static 'network/img/Default.png' %}" class="rounded-circle me-2 smlprofilep" alt="Profile Picture" width="30" height="30">
                 {% endif %}
+
                 <a href="{% url 'user' post.user.id %}" class="text-decoration-none userheader">{{ post.user }}</a>
             </div>
             {% if post.user.id == request.user.id %}
+
                 <a href="#/" class="text-decoration-none text-white edit-link" data-id="post-{{ post.id }}">Edit</a>
             {% endif %}
         </div>
@@ -34,31 +44,37 @@
                 </a>
                 <a href="{% url 'comment' post.id %}" class="me-1 commenticon"><i class="fas fa-comment-dots"></i></a>
                 {% if post.user.id == request.user.id %}
+
                     <form action="{% url 'post' post.id %}" method="post" class="d-inline">
                         {% csrf_token %}
                         <input type="hidden" name="remove_post" value="remove_post" class="form-control">
                         <button type="submit" class="trash"><i class="fas fa-trash-can"></i></button>
                     </form>
+
                 {% endif %}
             </div>
         </div>
     </div>
+
 {% empty %}
     <div class="text-center text-muted">No posts yet.</div>
 {% endfor %}
 </div>
 
     {% if pages.num_pages > 1 %}
+
     <div class="row justify-content-center">
         <nav aria-label="Search results pages">
             <ul class="pagination">
                 {% if posts.has_previous %}
+
                 <li class="page-item">
                     <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
                 {% else %}
+
                 <li class="page-item disabled">
                     <a class="page-link" href="?page=#" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
@@ -67,25 +83,33 @@
                 {% endif %}
 
                 {% for page_num in pages.page_range %}
+
                 <li class="page-item"><a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a></li>
                 {% endfor %}
 
                 {% if posts.has_next %}
+
                 <li class="page-item">
                     <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
                 {% else %}
+
                 <li class="page-item disabled">
                     <a class="page-link" href="?page=#" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
+
                 {% endif %}
+                
             </ul>
         </nav>
     </div>
+
     {% endif %}
+
 </div>
+
 {% endblock %}

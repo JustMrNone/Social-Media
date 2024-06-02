@@ -2,21 +2,28 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
+
 <head>
     <title>{% block title %}Social Network{% endblock %}</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8t/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="{% static 'network/img/favicon.ico' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="{% static 'network/css/styles.css' %}" rel="stylesheet">
     <link href="{% static 'network/css/dark.css' %}" rel="stylesheet">
 
     <script src="{% static 'network/js/dark.js' %}"></script>
     <script src="{% static 'network/js/script.js' %}"></script>
+    <style>
+
+    </style>
 </head>
+
+
 <body>
     <div class="navi">
         <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
@@ -52,15 +59,16 @@
                     </li>
                     {% endif %}
                 </ul>
-    
-                <!-- Add the search form here -->
+                {% if user.is_authenticated %}
+                <!-- search form  -->
                 <form class="form-inline my-2 my-lg-0 searchco" method="GET" action="{% url 'search' %}">
                     <input class="form-control mr-sm-2 searchbox" type="search" placeholder="Search Users" aria-label="Search" name="q">
                     <button class="btn btn-outline-success my-2 my-sm-0 searchbutton" type="submit">Search</button>
                 </form>
+                {% endif %}
     
-                <!-- Add the switch here -->
-                <form class="form-inline my-2 my-lg-0">
+                <!--  the switch  -->
+                <form class="form-inline my-2 my-lg-0 custom-switch-wrapper d-flex justify-content-center">
                     <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" id="customSwitch1">
                         <label class="custom-control-label" for="customSwitch1"></label>
@@ -70,12 +78,18 @@
         </nav>
     </div>
     </div>
+
+
     <div class="body">
         {% block body %}
         {% endblock body %}
     </div>
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    
 </body>
 </html>

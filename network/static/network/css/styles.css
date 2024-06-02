@@ -353,3 +353,12 @@ textarea.form-control {
 .like-link.unliked {
     color: white; /* Set the color to white when unliked */
 }
+@media (max-width: 576px) {
+    .navbar-nav {
+        flex-direction: column;
+    }
+    .form-inline.custom-switch-wrapper {
+        justify-content: center;
+        width: 100%;
+    }
+}

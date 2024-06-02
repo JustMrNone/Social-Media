@@ -172,9 +172,9 @@ def logoutFunc(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-
+@login_required
 def comment(request, post_id):
-    post = Post.objects.get(pk=post_id)
+    post = get_object_or_404(Post, pk=post_id)
 
     # Handle deletion of user comments
     if "remove_comment" in request.POST:
@@ -197,8 +197,8 @@ def comment(request, post_id):
         new_comment = Comment(comment=comment_body, user=request.user, post=post)
         new_comment.save()
 
-        # Redirect to the index page after saving the comment
-        return redirect(reverse('index'))
+        # Redirect to the comment section of the specific post
+        return redirect(f'{reverse("comment", args=[post_id])}#comments')
 
     comments = Comment.objects.filter(post=post)
     return render(request, "network/comment.html", {

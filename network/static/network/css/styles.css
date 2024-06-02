@@ -97,7 +97,9 @@ textarea.form-control {
     resize: vertical; /* Allow vertical resizing */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
-
+.nav-link{
+    font-family: 'Marigold', cursive !important;
+}
 .followbtn {
     margin-left: 140px;
     margin-right: 140px;
@@ -361,4 +363,22 @@ textarea.form-control {
         justify-content: center;
         width: 100%;
     }
+}
+.editprofile{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
+}
+.editprofile:hover{
+
+    background-color: #38ada9;
+    border-color: #38ada9;
+}
+.follow .unfollow{
+    background-color: #38ada9;
+    border-color: #38ada9;
+}
+
+.follow .unfollow:hover{
+    background-color: #60a3bc;
+    border-color: #60a3bc;
 }

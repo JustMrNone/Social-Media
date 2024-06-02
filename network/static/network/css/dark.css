@@ -45,3 +45,12 @@
 .dark-mode .edit-link{
     color: #f7f1e3 !important;
 }
+.dark-mode .editprofile{
+    background-color: #006266;
+    border-color: #006266;
+}
+
+.dark-mode .editprofile:hover{
+    background-color: #00767a;
+    border-color: #00767a;
+}

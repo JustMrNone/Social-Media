@@ -14,18 +14,10 @@ import re
 from django.core.cache import cache
 from django.conf import settings
 
-@login_required
-def search(request):
-    query = request.GET.get('q')
-    if query:
-        users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
-    else:
-        users = User.objects.none()
 
-    return render(request, 'network/search_results.html', {
-        'query': query,
-        'users': users,
-    })
+
+
+
 def registerFunc(request):
     if request.method == "POST":
         # Retrieve user input from the registration form
@@ -83,6 +75,9 @@ def registerFunc(request):
     else:
         return render(request, "network/register.html")
     
+   
+    
+    
 def loginFunc(request):
     if request.method == "POST":
         # Retrieve user input from the login form
@@ -132,6 +127,18 @@ def loginFunc(request):
         return render(request, "network/login.html")
     
     
+    
+    
+    
+@login_required
+def logoutFunc(request):
+    # Log the user out and redirect to the index page
+    logout(request)
+    return HttpResponseRedirect(reverse("index"))
+    
+    
+    
+    
 @login_required
 def index(request):
     error_message = None
@@ -165,103 +172,8 @@ def index(request):
         "error_message": error_message,
         
     })
-    
-@login_required
-def logoutFunc(request):
-    # Log the user out and redirect to the index page
-    logout(request)
-    return HttpResponseRedirect(reverse("index"))
 
-@login_required
-def comment(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
 
-    # Handle deletion of user comments
-    if "remove_comment" in request.POST:
-        if request.POST["remove_comment"]:
-            try:
-                comment = Comment.objects.get(pk=request.POST['comment_id'])
-                comment.delete()
-            except Comment.DoesNotExist:
-                return JsonResponse({"error": "Comment not found."}, status=404)
-
-            comments = Comment.objects.filter(post=post)
-            return render(request, "network/comment.html", {
-                'post': post,
-                'comments': comments
-            })
-
-    if request.method == "POST" and "post" in request.POST:
-        # If a POST request is received, create a new comment
-        comment_body = request.POST["post"]
-        new_comment = Comment(comment=comment_body, user=request.user, post=post)
-        new_comment.save()
-
-        # Redirect to the comment section of the specific post
-        return redirect(f'{reverse("comment", args=[post_id])}#comments')
-
-    comments = Comment.objects.filter(post=post)
-    return render(request, "network/comment.html", {
-        'post': post,
-        'comments': comments
-    })
-@login_required
-def following(request):
-    # Retrieve the current user
-    user = User.objects.get(pk=request.user.id)
-    
-    # Retrieve all users followed by the current user
-    followed_users = user.following.all().values_list('following_user_id', flat=True)
-    
-    # Retrieve posts from followed users and paginate them
-    posts = Post.objects.filter(user_id__in=followed_users).order_by('-timestamp')
-    paginator = Paginator(posts, 6)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, "network/following.html", {
-        "posts": page_obj,
-        "pages": paginator
-    })
-@login_required
-def like(request, post_id):
-    if request.method == "POST":
-        post = Post.objects.get(pk=post_id)
-        like_queryset = Like.objects.filter(user=request.user, post=post)
-        if like_queryset.exists():
-            # If the user has already liked the post, unlike it
-            like_queryset.delete()
-            post.total_likes -= 1
-        else:
-            # If the user hasn't liked the post, create a new like
-            Like.objects.create(user=request.user, post=post)
-            post.total_likes += 1
-        post.save()
-        return HttpResponse(status=204)
-    elif request.method == "GET":
-        post = Post.objects.get(pk=post_id)
-        return JsonResponse(post.total_likes, safe=False)
-    
-    
-@login_required
-def post(request, post_id):
-
-    if "remove_post" in request.POST:
-        if request.POST["remove_post"]:
-            post = Post.objects.get(user=request.user, pk=post_id)
-            post.delete()
-            return HttpResponseRedirect(reverse("index"))
-
-    try:
-        post = Post.objects.get(user=request.user, pk=post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "Post not found."}, status=404)
-    
-    if request.method == "PUT":
-        data = json.loads(request.body)
-        post.body = data['body']
-        post.save()
-        return HttpResponse(status=204)
 
 
 
@@ -302,6 +214,9 @@ def user(request, user_id):
         "is_following": is_following,
         "post_pictures": post_pictures  # Pass the list of picture URLs to the template
     })
+    
+    
+    
     
 def follow_user(follower, following_user):
     if not follower.following.filter(pk=following_user.id).exists():
@@ -348,14 +263,20 @@ def view_profile(request, user_id):
     })
     
 
+
+
 def follow_user(requesting_user, user_to_follow):
     if not UserFollowing.objects.filter(user_id=requesting_user, following_user_id=user_to_follow).exists():
         UserFollowing.objects.create(user_id=requesting_user, following_user_id=user_to_follow)
+
+
 
 def unfollow_user(requesting_user, user_to_unfollow):
     follow_instance = UserFollowing.objects.filter(user_id=requesting_user, following_user_id=user_to_unfollow)
     if follow_instance.exists():
         follow_instance.delete()
+ 
+ 
         
 @login_required
 def edit_profile(request, user_id):
@@ -369,3 +290,125 @@ def edit_profile(request, user_id):
         form = ProfileForm(instance=user)
 
     return render(request, 'network/edit_profile.html', {'profile_form': form})
+
+
+
+@login_required
+def comment(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    # Handle deletion of user comments
+    if "remove_comment" in request.POST:
+        if request.POST["remove_comment"]:
+            try:
+                comment = Comment.objects.get(pk=request.POST['comment_id'])
+                comment.delete()
+            except Comment.DoesNotExist:
+                return JsonResponse({"error": "Comment not found."}, status=404)
+
+            comments = Comment.objects.filter(post=post)
+            return render(request, "network/comment.html", {
+                'post': post,
+                'comments': comments
+            })
+
+    if request.method == "POST" and "post" in request.POST:
+        # If a POST request is received, create a new comment
+        comment_body = request.POST["post"]
+        new_comment = Comment(comment=comment_body, user=request.user, post=post)
+        new_comment.save()
+
+        # Redirect to the comment section of the specific post
+        return redirect(f'{reverse("comment", args=[post_id])}#comments')
+
+    comments = Comment.objects.filter(post=post)
+    return render(request, "network/comment.html", {
+        'post': post,
+        'comments': comments
+    })
+    
+    
+    
+
+@login_required
+def search(request):
+    query = request.GET.get('q')
+    if query:
+        users = User.objects.filter(Q(username__icontains=query) | Q(email__icontains=query))
+    else:
+        users = User.objects.none()
+
+    return render(request, 'network/search_results.html', {
+        'query': query,
+        'users': users,
+    })
+    
+    
+
+    
+@login_required
+def following(request):
+    # Retrieve the current user
+    user = User.objects.get(pk=request.user.id)
+    
+    # Retrieve all users followed by the current user
+    followed_users = user.following.all().values_list('following_user_id', flat=True)
+    
+    # Retrieve posts from followed users and paginate them
+    posts = Post.objects.filter(user_id__in=followed_users).order_by('-timestamp')
+    paginator = Paginator(posts, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "network/following.html", {
+        "posts": page_obj,
+        "pages": paginator
+    })
+    
+    
+    
+    
+@login_required
+def like(request, post_id):
+    if request.method == "POST":
+        post = Post.objects.get(pk=post_id)
+        like_queryset = Like.objects.filter(user=request.user, post=post)
+        if like_queryset.exists():
+            # If the user has already liked the post, unlike it
+            like_queryset.delete()
+            post.total_likes -= 1
+        else:
+            # If the user hasn't liked the post, create a new like
+            Like.objects.create(user=request.user, post=post)
+            post.total_likes += 1
+        post.save()
+        return HttpResponse(status=204)
+    elif request.method == "GET":
+        post = Post.objects.get(pk=post_id)
+        return JsonResponse(post.total_likes, safe=False)
+    
+    
+    
+    
+@login_required
+def post(request, post_id):
+
+    if "remove_post" in request.POST:
+        if request.POST["remove_post"]:
+            post = Post.objects.get(user=request.user, pk=post_id)
+            post.delete()
+            return HttpResponseRedirect(reverse("index"))
+
+    try:
+        post = Post.objects.get(user=request.user, pk=post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        post.body = data['body']
+        post.save()
+        return HttpResponse(status=204)
+
+
+

@@ -92,7 +92,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }),
             }).then(() => {
                 // Update the post content dynamically
-                replacePostContent(postId, body, updatedPost);
+                //this does not work in darkmode 
+                //replacePostContent(postId, body, updatedPost);
+                //therefore we are going with this to ensure compability
+                window.location.reload();
             });
         };
     
@@ -114,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Apply the style to match the original HTML
         postBody.style.fontFamily = "Roboto, sans-serif";
-        postBody.style.color = "#f7f1e3"; // Set text color
         postBody.style.fontSize = "16px"; // Set font size
     
         postBody.textContent = updatedPost;

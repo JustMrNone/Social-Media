@@ -20,11 +20,6 @@ form .text-center {
     text-align: center;
 }
 
-/* Adjust height of card body to match height of textarea */
-.card-body {
-    min-height: 100px; /* Adjust as needed */
-}
-
 /* Additional padding and margin adjustments */
 .container {
     padding-top: 20px;
@@ -88,7 +83,7 @@ textarea.form-control {
     background-color: #fdfaf3 !important;
 }
 .card-body {
-    min-height: 150px; /* Adjust the minimum height as needed */
+    min-height: 80px; /* Adjust the minimum height as needed */
 }
 
 .custom-textarea {
@@ -204,9 +199,6 @@ textarea.form-control {
 .like-link i {
     transition: color 0.3s ease;
 }
-
-
-
 .edit-link {
     font-size: 0.9rem;
     font-weight: 500;
@@ -349,4 +341,7 @@ textarea.form-control {
 }
 .edit-link{
     color: #1e272e !important;
+}
+.postbody{
+    margin-bottom: 0px;
 }

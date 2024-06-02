@@ -154,7 +154,7 @@ def index(request):
     posts = Post.objects.all().order_by('-timestamp')
     
     # Paginate the posts
-    p = Paginator(posts, 10)
+    p = Paginator(posts, 6)
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
     
@@ -284,7 +284,6 @@ def post(request, post_id):
     if request.method == "PUT":
         data = json.loads(request.body)
         post.body = data['body']
-        post.timestamp =  '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
         post.save()
         return HttpResponse(status=204)
 
@@ -308,7 +307,7 @@ def user(request, user_id):
     is_following = UserFollowing.objects.filter(user_id=requesting_user, following_user_id=profile_user).exists()
 
     user_posts = Post.objects.filter(user=profile_user).order_by('-timestamp')
-    paginator = Paginator(user_posts, 10)
+    paginator = Paginator(user_posts, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -360,7 +359,7 @@ def view_profile(request, user_id):
     is_following = UserFollowing.objects.filter(user_id=request.user.id, following_user_id=profile_user.id).exists()
 
     user_posts = Post.objects.filter(user=profile_user).order_by('-timestamp')
-    paginator = Paginator(user_posts, 10)
+    paginator = Paginator(user_posts, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

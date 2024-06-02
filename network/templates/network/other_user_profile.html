@@ -6,8 +6,16 @@
   <div class="row">
     <div class="col-3">
       <div class="card">
-        <!-- <img src="..." class="card-img-top" alt="..."> -->
-        <div class="card-body">
+        <div class="card-body text-center">
+          <!-- Profile Picture -->
+          <div class="profilepicco">
+            {% if user.picture and user.picture.url %}
+            <img src="{{ user.picture.url }}" class="profile-picture rounded-circle mb-3" alt="Profile Picture">
+            {% else %}
+            <img src="{% static 'network/img/Default.png' %}" class="profile-picture rounded-circle mb-3" alt="Profile Picture">
+            {% endif %}
+          </div>
+          
           <h3>{{ profile_user.username }}</h3>
         </div>
         <hr>
@@ -51,12 +59,18 @@
     <div class="col-9">
       {% for post in posts %}
         <div class="card mb-3">
-          <div class="card-header">
-              <a href="{% url 'view_profile' profile_user.id %}" class="text-decoration-none text-muted"> {{ post.user }} </a>
+          <div class="card-header d-flex align-items-center">
+            <!-- Profile Picture Thumbnail -->
+            {% if post.user.picture and post.user.picture.url %}
+            <img src="{{ post.user.picture.url }}" alt="Profile Picture" class="rounded-circle me-2" width="40" height="40">
+            {% else %}
+            <img src="{% static 'network/img/Default.png' %}" class="rounded-circle me-2" alt="Profile Picture" width="40" height="40">
+            {% endif %}
+            <a href="{% url 'view_profile' post.user.id %}" class="text-decoration-none text-muted">{{ post.user }}</a>
           </div>
           <div class="card-body">
-          <pre class="card-text" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">{{ post.body }}</pre>
-          <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}"><i class="fa fa-heart" aria-hidden="true" style="color:red"></i> <span> {{ post.total_likes }}</span></a>
+            <pre class="card-text" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif">{{ post.body }}</pre>
+            <a href="#/" class="text-decoration-none like-link" data-id="post-{{ post.id }}"><i class="fa fa-heart" aria-hidden="true" style="color:red"></i> <span>{{ post.total_likes }}</span></a>
           </div>
           <div class="card-footer text-muted d-flex justify-content-between">
             <p>{{ post.timestamp }}</p>
@@ -66,7 +80,7 @@
         {% empty %}
         <div>No posts.</div>
       {% endfor %}
-    </div>  
+    </div>
   </div>
 </div>
 

@@ -8,14 +8,14 @@
       <div class="card">
         <div class="card-body text-center">
 
-
-          {% if user.picture and user.picture.url %}
-          <img src="{{ user.picture.url }}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
-          {% else %}
-          <img src="{% static 'network/img/Default.png' %}" class="rounded-circle mb-3" alt="Profile Picture" width="150" height="150">
-          {% endif %}
-
-
+          <div class="profilepicco">
+            {% if user.picture and user.picture.url %}
+            <img src="{{ user.picture.url }}" class="profile-picture rounded-circle mb-3" alt="Profile Picture">
+            {% else %}
+            <img src="{% static 'network/img/Default.png' %}" class="profile-picture rounded-circle mb-3" alt="Profile Picture">
+            {% endif %}
+          </div>
+          
           <h3>{{ user.username }}</h3>
           <hr>
           <div class="container my-4">

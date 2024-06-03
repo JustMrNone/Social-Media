@@ -49,9 +49,12 @@ def registerFunc(request):
             })
 
         # Check if the user has reached the maximum registration attempts within the specified time period
-        ip_address = request.META.get("REMOTE_ADDR")  # Retrieve IP address
+        ip_address = request.META.get("REMOTE_ADDR") # Retrieve IP address
+        
         cache_key = f"registration_attempts_{ip_address}"
+        
         registration_attempts = cache.get(cache_key, 0)
+        
         if registration_attempts >= settings.MAX_REGISTRATION_ATTEMPTS:
             return render(request, "network/register.html", {
                 "message": "Maximum registration attempts exceeded. Please try again later."

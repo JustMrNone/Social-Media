@@ -4,3 +4,4 @@ jsonlib
 pytz
 sqlparse
 asgiref>=3.3.2,<4
+crispy_bootstrap4

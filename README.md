@@ -1,67 +1,84 @@
-# Network
-<div>
+# Network Application
+
+<div align="center">
   <a><img src="https://justmrnone.github.io/NeverEndingPong/repersentation/social.png" width="100%"></a>
 </div>
-A social network application built with Django.
+
+A **social network application** built with Django that allows users to register, create posts, follow others, and interact through likes and comments.
+
+---
 
 ## Features
 
-- User registration, login, and logout
-- Password validation and email uniqueness checks
-- User search functionality
-- Post creation, editing, and deletion
-- Commenting on posts
-- Following and unfollowing users
-- Liking and unliking posts
-- User profile management with profile picture upload
-- Pagination for posts
+- **User Registration, Login, and Logout**
+- **Password Validation** and Email Uniqueness Checks
+- **User Search** Functionality
+- **Post Creation**, Editing, and Deletion
+- **Commenting** on Posts
+- **Following** and Unfollowing Users
+- **Liking** and Unliking Posts
+- **User Profile Management** with Profile Picture Upload
+- **Pagination** for Posts
+
+---
 
 ## Requirements
 
 - Python 3.x
 - Django 3.2
-- Additional dependencies listed in `requirements.txt`
+- Additional dependencies are listed in `requirements.txt`
+
+---
 
 ## Usage
 
-### User Registration and Login
+### 1. **User Registration and Login**
 
-- Register a new user by filling out the registration form. Make sure your password meets the validation criteria.
-- Log in using your username and password.
+- **Register**: Fill out the registration form. Password must meet the validation criteria.
+- **Login**: Use your username and password to log in to the platform.
 
-### Creating and Managing Posts
+### 2. **Creating and Managing Posts**
 
-- Create a new post from the homepage.
-- Edit or delete your posts as needed.
-- View and add comments to posts.
+- **Create**: Add a new post directly from the homepage.
+- **Edit**: Update or modify your existing posts.
+- **Delete**: Remove posts if needed.
+- **Comment**: View posts and add comments to any post.
 
-### Following Users
+### 3. **Following Users**
 
-- Search for other users and view their profiles.
-- Follow or unfollow users directly from their profile pages.
-- View posts from users you follow on the "Following" page.
+- **Search**: Look for users using the search functionality.
+- **Follow/Unfollow**: Follow or unfollow users from their profile page.
+- **Following Page**: View posts only from users you're following on the dedicated "Following" page.
 
-### Liking Posts
+### 4. **Liking Posts**
 
-- Like or unlike posts with a single click.
-- View the total number of likes on each post.
+- **Like/Unlike**: Like or unlike any post with a simple click.
+- **Like Count**: Each post displays the total number of likes it has received.
 
-### Editing Profile
+### 5. **Editing Profile**
 
-- Edit your profile information and upload a profile picture.
+- **Profile Management**: Update your profile information and upload a profile picture.
+
+---
 
 ## Configuration
 
-The application relies on Django settings for configuration. Here are some important settings you might want to configure:
+The application uses Django settings for various configuration options. Some important settings to consider:
 
-- `MAX_REGISTRATION_ATTEMPTS`: Maximum allowed registration attempts from a single IP address.
-- `REGISTRATION_ATTEMPT_TIMEOUT`: Timeout for registration attempts cache in seconds.
-- `LOGIN_ATTEMPT_TIMEOUT`: Timeout for login attempts cache in seconds.
+- **`MAX_REGISTRATION_ATTEMPTS`**: Set the maximum number of allowed registration attempts from a single IP address.
+- **`REGISTRATION_ATTEMPT_TIMEOUT`**: Define the timeout duration (in seconds) for registration attempts.
+- **`LOGIN_ATTEMPT_TIMEOUT`**: Set the timeout duration (in seconds) for login attempts.
 
-These settings should be added in your `settings.py` file.
+These configurations should be added or adjusted in your `settings.py` file.
+
+---
 
 ## Project Structure
 
-- `network/`: Contains the Django app with models, views, forms, and templates.
-- `static/`: Contains static files like CSS, JavaScript, and images.
-- `templates/`: Contains HTML templates for the app.
+- **`network/`**: Contains the core Django app, including models, views, forms, and templates.
+- **`static/`**: Holds all static files such as CSS, JavaScript, and images.
+- **`templates/`**: Includes all HTML templates for the application.
+
+---
+
+This layout makes the app’s purpose, features, and structure clearer while keeping it concise and easy to read. You could also link to your `requirements.txt` or other project-related files if needed.
